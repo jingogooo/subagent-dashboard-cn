@@ -937,7 +937,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
 
     <div class="view-toggle">
         <button onclick="showView('kanban')" id="kanbanBtn" class="active">📋 Kanban Board</button>
-        <button onclick="showView('cards')" id="cardsBtn">🎴 Agent Cards</button>
+        <button onclick="showView('cards')" id="cardsBtn">🎴 智能体卡片</button>
     </div>
 
     <div id="kanbanView" style="display: block;">
@@ -1036,7 +1036,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
         }
 
         function getAgentStatus(agent) {
-            // Cancelled jobs get their own column
+            // 已取消的任务进入单独的列
             const outcomeStatus = (agent.outcomeStatus || (agent.outcome && agent.outcome.status) || '').toString().toLowerCase();
             if (['cancelled', 'canceled', 'killed'].includes(outcomeStatus)) {
                 return 'cancelled';
@@ -1093,8 +1093,8 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
             const ageMinutes = ((agent.ageMs || 0) / 60000).toFixed(1);
             if (lane === 'in_progress') return { dotClass: 'working', text: `Heartbeat: active now (${ageMinutes}m)` };
             if (lane === 'queue') return { dotClass: 'idle', text: `Heartbeat: queued (${ageMinutes}m)` };
-            if (lane === 'blocked') return { dotClass: 'stalled', text: `Heartbeat: blocked (${ageMinutes}m)` };
-            if (lane === 'cancelled') return { dotClass: 'stalled', text: 'Heartbeat: cancelled' };
+            if (lane === 'blocked') return { dotClass: 'stalled', text: `心跳: 阻塞 (${ageMinutes}m)` };
+            if (lane === 'cancelled') return { dotClass: 'stalled', text: '心跳: 已取消' };
             return { dotClass: 'completed', text: 'Heartbeat: completed' };
         }
 
@@ -1166,7 +1166,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
                         </div>
                     </div>
                     ${taskProgress}
-                    ${agent.task ? `<div class="task-description">${escapeHtml(agent.task)}</div>` : '<div class="task-description" style="color: #ff9800;">⚠️ No task description found</div>'}
+                    ${agent.task ? `<div class="task-description">${escapeHtml(agent.task)}</div>` : '<div class="task-description" style="color: #ff9800;">⚠️ 未找到任务描述</div>'}
                     <div class="console-line"><strong>Console:</strong> ${consoleText}</div>
                     ${(agent.completed && lane !== 'cancelled') ? `<div style="font-size: 11px; color: #4caf50; margin-top: 8px; padding: 6px; background: #0a0e27; border-radius: 4px; border-left: 3px solid #4caf50;">✅ Task completed successfully (session still active - may need cleanup)</div>` : ''}
                     ${getStalledReason(agent, isStalled)}
@@ -1367,7 +1367,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
                 
                 const events = await fetchTranscript(sessionId);
                 if (events.length === 0) {
-                    eventsDiv.innerHTML = '<div class="event">No transcript events found.</div>';
+                    eventsDiv.innerHTML = '<div class="event">未找到对话记录事件</div>';
                     eventsDiv.setAttribute('data-loaded', 'true');
                 } else {
                     eventsDiv.innerHTML = events.map(event => renderTranscriptEvent(event)).join('');
@@ -1380,7 +1380,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
                     eventsDiv.innerHTML = '加载中...';
                     const events = await fetchTranscript(sessionId);
                     if (events.length === 0) {
-                        eventsDiv.innerHTML = '<div class="event">No transcript events found.</div>';
+                        eventsDiv.innerHTML = '<div class="event">未找到对话记录事件</div>';
                     } else {
                         eventsDiv.innerHTML = events.map(event => renderTranscriptEvent(event)).join('');
                     }
@@ -1482,7 +1482,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
             
             // Get button element for status updates
             const button = event ? event.target : document.getElementById(`resume-${sessionId}`);
-            const originalText = button ? button.textContent : '▶️ Resume Task';
+            const originalText = button ? button.textContent : '▶️ 恢复任务';
             
             try {
                 const requestBody = { sessionKey: sessionKey };
@@ -1501,7 +1501,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
                         button.disabled = true;
                     }
                     
-                    alert('Resume message sent! Checking status in 30 seconds...');
+                    alert('恢复消息已发送! 30秒后检查状态...');
                     
                     // Wait 30 seconds, then check if agent resumed
                     setTimeout(async () => {
@@ -1515,8 +1515,8 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
                             
                             // If updatedAt hasn't changed, agent didn't resume
                             if (updatedAtAfter <= updatedAtBefore) {
-                                // Resume failed, trigger restart automatically
-                                if (confirm('Agent did not resume after 30 seconds. Restart it now?')) {
+                                // 恢复失败，自动触发重启
+                                if (confirm('智能体30秒后仍未恢复。现在重启吗?')) {
                                     await restartAgent(sessionId);
                                 } else {
                                     if (button) {
@@ -1688,7 +1688,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
                     'queue': { title: '🧾 Queue / To Do', agents: [] },
                     'in_progress': { title: '🔄 In Progress', agents: [] },
                     'blocked': { title: '⛔ Blocked', agents: [] },
-                    'cancelled': { title: '⛔ Cancelled Jobs', agents: [] },
+                    'cancelled': { title: '⛔ 已取消任务', agents: [] },
                     'completed': { title: '✅ Completed', agents: [] }
                 };
 
@@ -1748,7 +1748,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
                             if (agent.outcome && agent.outcome.status !== 'ok') {
                                 stalledReason = `<div class="stalled-reason">⚠️ Error: ${agent.outcome.status || 'Failed'} - Task ended with error status</div>`;
                             } else if (agent.completed) {
-                                stalledReason = `<div class="stalled-reason">ℹ️ Completed but session still active (needs cleanup)</div>`;
+                                stalledReason = `<div class="stalled-reason">ℹ️ 已完成但会话仍活跃 (需要清理)</div>`;
                             } else if (ageMinutes > 60) {
                                 stalledReason = `<div class="stalled-reason">⏱️ Inactive for ${ageMinutes.toFixed(1)} minutes - May be stuck or waiting</div>`;
                             } else {
@@ -1802,7 +1802,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
 
                     const shouldCollapse = (isCompleted || isCancelled);
                     const collapseToggle = shouldCollapse && col.agents.length > 0 ? 
-                        `<span class="collapse-toggle" onclick="event.stopPropagation(); toggleCompletedColumn('${key}');">[collapse]</span>` : '';
+                        `<span class="collapse-toggle" onclick="event.stopPropagation(); toggleCompletedColumn('${key}');">[收起]</span>` : '';
 
                     return `
                         <div class="kanban-column ${isCompleted ? 'completed-column collapsed' : ''} ${isCancelled ? 'cancelled-column collapsed' : ''}" id="column-${key}">
@@ -3192,4 +3192,4 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))  # Default to 8080 to avoid macOS AirPlay conflict
     print(f"正在启动智能体监控面板于 http://localhost:{port}")
     print(f"OpenClaw 主目录: {OPENCLAW_HOME}")
-    app.run(host='0.0.0.0', port=port, debug=True)True)e)))))rue)True)e)))))
+    app.run(host='0.0.0.0', port=port, debug=True)True)e)))))rue)True)e))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
