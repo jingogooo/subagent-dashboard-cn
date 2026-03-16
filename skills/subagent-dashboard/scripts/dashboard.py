@@ -887,7 +887,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
                 <span class="project-icon">📁</span>
                 <span class="project-label">项目: <strong id="projectLabel">—</strong></span>
             </div>
-            <div class="last-update" id="lastUpdate">Last update: Never</div>
+            <div class="last-update" id="lastUpdate">最后更新: 从未</div>
         </div>
         <div class="controls">
             <span class="status-indicator active" id="statusIndicator"></span>
@@ -1179,7 +1179,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
                     </div>
                     <div id="transcript-${agent.sessionId}" class="transcript-panel" style="display: none; margin-top: 15px;">
                         <div class="transcript-header">
-                            <strong>Recent Activity</strong>
+                            <strong>最近活动</strong>
                             <button onclick="closeTranscript('${agent.sessionId}')">✕</button>
                         </div>
                         <div class="transcript-events" id="transcript-events-${agent.sessionId}" data-loaded="false">
@@ -1288,7 +1288,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
                     className = 'thinking';
                     const text = content.find(c => c.type === 'text')?.text || '';
                     if (text) {
-                        display = `💭 <strong>Thinking:</strong><br>${text.substring(0, 500) + (text.length > 500 ? '...' : '')}`;
+                        display = `💭 <strong>思考中:</strong><br>${text.substring(0, 500) + (text.length > 500 ? '...' : '')}`;
                     } else {
                         display = '💭 <strong>Processing...</strong>';
                     }
@@ -1360,10 +1360,10 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
             // Panel is hidden, show it and load content
             panel.style.display = 'block';
             
-            // Only fetch if content is empty, says "Loading...", or has no children
+            // 仅当内容为空、显示"加载中..."或没有子元素时才获取
             const currentContent = eventsDiv.innerHTML.trim();
-            if (currentContent === 'Loading...' || currentContent === '' || eventsDiv.children.length === 0) {
-                eventsDiv.innerHTML = 'Loading...';
+            if (currentContent === '加载中...' || currentContent === '' || eventsDiv.children.length === 0) {
+                eventsDiv.innerHTML = '加载中...';
                 
                 const events = await fetchTranscript(sessionId);
                 if (events.length === 0) {
@@ -1377,7 +1377,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
                 // Content already loaded, just ensure it's displayed
                 if (eventsDiv.getAttribute('data-loaded') !== 'true') {
                     // Content was lost, reload it
-                    eventsDiv.innerHTML = 'Loading...';
+                    eventsDiv.innerHTML = '加载中...';
                     const events = await fetchTranscript(sessionId);
                     if (events.length === 0) {
                         eventsDiv.innerHTML = '<div class="event">No transcript events found.</div>';
@@ -1412,7 +1412,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
             
             const taskPreviewText = String(task || '').substring(0, 100).replace(/["'`]/g, '');
             const taskPreview = taskPreviewText ? ' and restart with: "' + taskPreviewText + '..."' : '';
-            if (!skipConfirm && !confirm('Restart this subagent? This will terminate the current session' + taskPreview + '.')) {
+            if (!skipConfirm && !confirm('重启此智能体? 这将终止当前会话' + taskPreview + '.')) {
                 return;
             }
             
@@ -2379,7 +2379,7 @@ def get_subagent_transcript(session_id):
     events = []
     
     if not transcript_path.exists():
-        return jsonify({"error": "Transcript not found", "events": []}), 404
+        return jsonify({"error": "对话记录未找到", "events": []}), 404
     
     try:
         with open(transcript_path, 'r', encoding='utf-8') as f:
@@ -3192,4 +3192,4 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))  # Default to 8080 to avoid macOS AirPlay conflict
     print(f"正在启动智能体监控面板于 http://localhost:{port}")
     print(f"OpenClaw 主目录: {OPENCLAW_HOME}")
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=port, debug=True)True)e)))))rue)True)e)))))
