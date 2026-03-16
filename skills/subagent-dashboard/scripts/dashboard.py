@@ -1047,7 +1047,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
             }
             
             const ageMs = agent.ageMs || 0;
-            const isStalled = ageMs > 30 * 60 * 1000;   // No activity 30+ min -> blocked
+            const isStalled = ageMs > 30 * 60 * 1000;   // 30分钟无活动 -> 阻塞
             const hasTask = !!(agent.task && String(agent.task).trim());
             
             if (isStalled) return 'stalled';
@@ -1536,7 +1536,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
                             }
                         } catch (checkError) {
                             // If check fails, assume resume failed and restart
-                            console.error('Error checking resume status:', checkError);
+                            console.error('检查恢复状态时出错:', checkError);
                             if (confirm('Could not verify if agent resumed. Restart it now?')) {
                                 await restartAgent(sessionId);
                             } else {
@@ -1736,10 +1736,10 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
                         const statusBadge = lane === 'in_progress' ? '<span class="kanban-task-status" style="background: #4fc3f7; color: #0a0e27;">In Progress</span>' :
                                           lane === 'queue' ? '<span class="kanban-task-status">Queue</span>' :
                                           lane === 'blocked' ? '<span class="kanban-task-status" style="background: #ff9800; color: #0a0e27;">Blocked</span>' :
-                                          lane === 'completed' ? '<span class="kanban-task-status" style="background: #4caf50; color: #0a0e27;">✅ Completed</span>' :
-                                          '<span class="kanban-task-status" style="background: #f44336; color: #fff;">⛔ Cancelled</span>';
+                                          lane === 'completed' ? '<span class="kanban-task-status" style="background: #4caf50; color: #0a0e27;">✅ 已完成</span>' :
+                                          '<span class="kanban-task-status" style="background: #f44336; color: #fff;">⛔ 已取消</span>';
                         
-                        const completedNote = (agent.completed && lane !== 'cancelled') ? '<div style="font-size: 10px; color: #4caf50; margin-top: 4px;">✓ Task completed successfully</div>' : '';
+                        const completedNote = (agent.completed && lane !== 'cancelled') ? '<div style="font-size: 10px; color: #4caf50; margin-top: 4px;">✓ 任务成功完成</div>' : '';
                         
                         // Stalled task reason/error detection
                         let stalledReason = '';
@@ -2215,7 +2215,7 @@ def get_project():
 
 @app.route('/api/subagents')
 def get_subagents():
-    """Get list of all sessions: subagents, main, and optionally cron. Always detects all from sessions.json.
+    """获取所有会话列表: 子代理、主控和可选的定时任务。始终从 sessions.json 检测所有会话。
     Query param: minutes=N (optional) to filter to sessions active within N minutes; omit to show all.
     Query param: cron=1 to include cron job sessions."""
     try:
@@ -2533,7 +2533,7 @@ def kill_subagent(session_id):
                         "endedAt": now_ms,
                         "outcome": {
                             "status": "cancelled",
-                            "message": "Cancelled from dashboard action",
+                            "message": "从监控面板操作取消",
                             "error": "manual_cancel",
                         },
                         "cleanup": "done",
@@ -2572,7 +2572,7 @@ def kill_subagent(session_id):
         }), (200 if success else 500)
     except Exception as e:
         print(f"kill_subagent error: {e}", file=sys.stderr)
-        return fail(f"Cancel failed: {str(e)}", 500)
+        return fail(f"取消失败: {str(e)}", 500)
 
 @app.route('/api/subagent/<session_id>/resume', methods=['POST'])
 def resume_subagent(session_id):
@@ -2633,7 +2633,7 @@ def resume_subagent(session_id):
         "session_id": session_id,
         "session_key": session_key,
         "resume_message": "Please continue working on your task.",
-        "note": "Resume requires sessions_send tool. If agent doesn't resume within 30 seconds, restart will be triggered.",
+        "note": "恢复需要 sessions_send 工具。如果智能体在30秒内未恢复，将触发重启。",
         "should_restart_on_failure": True,
         "updated_at_before": updated_at_before
     })
@@ -2671,7 +2671,7 @@ def restart_subagent(session_id):
         "session_id": session_id,
         "session_key": session_key,
         "task": task,
-        "note": "Restart requires gateway API to terminate session and respawn with same task. Use sessions_send to terminate, then sessions_spawn to restart."
+        "note": "重启需要网关 API 来终止会话并使用相同任务重新生成。使用 sessions_send 终止，然后使用 sessions_spawn 重启。"
     })
 
 @app.route('/api/stalled')
@@ -2828,12 +2828,12 @@ def spawn_session():
 
 @app.route('/api/sessions/<session_id>/send', methods=['POST'])
 def send_to_session(session_id):
-    """Send a message to a session."""
+    """发送消息到会话。"""
     data = request.get_json() or {}
     message = data.get("message", "")
     
     if not message:
-        return jsonify({"error": "message is required"}), 400
+        return jsonify({"error": "message 是必需的"}), 400
     
     # Placeholder - actual implementation would use gateway sessions_send
     return jsonify({"success": True, "note": "Gateway integration pending"}), 200
@@ -3059,13 +3059,13 @@ def unstage_files():
 
 @app.route('/api/git/commit', methods=['POST'])
 def commit_changes():
-    """Commit staged changes."""
+    """提交暂存的更改。"""
     data = request.get_json() or {}
     message = data.get("message", "")
     workspace_path = OPENCLAW_HOME / "workspace"
     
     if not message:
-        return jsonify({"error": "message is required"}), 400
+        return jsonify({"error": "message 是必需的"}), 400
     
     try:
         result = subprocess.run(
@@ -3192,4 +3192,4 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))  # Default to 8080 to avoid macOS AirPlay conflict
     print(f"正在启动智能体监控面板于 http://localhost:{port}")
     print(f"OpenClaw 主目录: {OPENCLAW_HOME}")
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=port, debug=True)ue))e))g=True)ue))e))))))g=True)ue))e))))))))))e)))))))))
