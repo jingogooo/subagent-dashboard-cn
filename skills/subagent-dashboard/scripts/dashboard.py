@@ -942,7 +942,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
 
     <div id="kanbanView" style="display: block;">
         <div id="kanbanBoard" class="kanban-board">
-            <div class="loading">Loading kanban board...</div>
+            <div class="loading">加载看板中...</div>
         </div>
     </div>
 
@@ -1116,7 +1116,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
             const age = formatDuration(agent.ageMs);
             const taskProgress = agent.taskIndex !== undefined && agent.totalTasks !== undefined
                 ? `<div class="task-progress">
-                    <div class="task-label">Task ${agent.taskIndex}/${agent.totalTasks}</div>
+                    <div class="task-label">任务 ${agent.taskIndex}/${agent.totalTasks}</div>
                     <div class="progress-bar">
                         <div class="progress-fill" style="width: ${(agent.taskIndex / agent.totalTasks) * 100}%"></div>
                     </div>
@@ -1615,7 +1615,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
                     break;
                 }
             } catch (e) {
-                console.error('Auto-requeue error:', e);
+                console.error('自动重排错误:', e);
             } finally {
                 autoRequeueInFlight = false;
             }
@@ -1746,7 +1746,7 @@ DASHBOARD_HTML = '''<!DOCTYPE html>
                         if (isBlocked) {
                             const ageMinutes = (agent.ageMs || 0) / 60000;
                             if (agent.outcome && agent.outcome.status !== 'ok') {
-                                stalledReason = `<div class="stalled-reason">⚠️ Error: ${agent.outcome.status || 'Failed'} - Task ended with error status</div>`;
+                                stalledReason = `<div class="stalled-reason">⚠️ 错误: ${agent.outcome.status || '失败'} - 任务以错误状态结束</div>`;
                             } else if (agent.completed) {
                                 stalledReason = `<div class="stalled-reason">ℹ️ 已完成但会话仍活跃 (需要清理)</div>`;
                             } else if (ageMinutes > 60) {
@@ -1869,7 +1869,7 @@ def run_tracker(command, *args, json_output=True):
     except subprocess.TimeoutExpired:
         return {"error": "Command timed out"}
     except json.JSONDecodeError:
-        return {"error": "Invalid JSON response"}
+        return {"error": "无效的 JSON 响应"}
     except Exception as e:
         return {"error": str(e)}
 
@@ -1882,7 +1882,7 @@ def _query_overstory_agents(timeout_sec=10):
         with urllib.request.urlopen(req, timeout=timeout_sec) as resp:
             data = json.loads(resp.read().decode())
     except (urllib.error.URLError, urllib.error.HTTPError, OSError, json.JSONDecodeError, ValueError) as e:
-        print(f"Overstory agents fetch failed: {e}", file=sys.stderr)
+        print(f"Overstory 智能体获取失败: {e}", file=sys.stderr)
         return []
     if isinstance(data, dict) and data.get("error"):
         return []
@@ -2004,7 +2004,7 @@ def _load_runs_from_path(path):
         with open(path, 'r', encoding='utf-8') as f:
             runs_data = json.load(f)
     except Exception as e:
-        print(f"Error loading {path}: {e}", file=sys.stderr)
+        print(f"加载 {path} 时出错: {e}", file=sys.stderr)
         return out_key, out_sid
     runs = runs_data.get("runs", {}) if isinstance(runs_data, dict) else {}
     run_items = list(runs.items()) if isinstance(runs, dict) else [(i, r) for i, r in enumerate(runs) if isinstance(r, dict)] if isinstance(runs, list) else []
@@ -2206,7 +2206,7 @@ def get_sessions():
 
 @app.route('/api/project')
 def get_project():
-    """Lightweight endpoint: current project/workspace label and path for indicators."""
+    """轻量级端点: 返回当前项目/工作区标签和路径供指示器使用。"""
     return jsonify({
         "project": PROJECT_LABEL,
         "workspace_path": str(WORKSPACE_PATH),
@@ -3192,4 +3192,4 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))  # Default to 8080 to avoid macOS AirPlay conflict
     print(f"正在启动智能体监控面板于 http://localhost:{port}")
     print(f"OpenClaw 主目录: {OPENCLAW_HOME}")
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=port, debug=True)ug=True))=True))rue)))))
