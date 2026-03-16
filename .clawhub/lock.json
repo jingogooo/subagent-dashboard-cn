@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "skills": {
+    "skill-finder-cn": {
+      "version": "1.0.0",
+      "installedAt": 1773589021474
+    },
+    "self-improving-agent": {
+      "version": "3.0.4",
+      "installedAt": 1773589102198
+    },
+    "stock-price-query": {
+      "version": "1.0.7",
+      "installedAt": 1773589383060
+    },
+    "api-gateway": {
+      "version": "1.0.69",
+      "installedAt": 1773589451089
+    },
+    "swarm-kanban": {
+      "version": "1.0.0",
+      "installedAt": 1773620641284
+    },
+    "agent-team-orchestration": {
+      "version": "1.0.0",
+      "installedAt": 1773620641690
+    },
+    "code-review": {
+      "version": "1.0.0",
+      "installedAt": 1773620641699
+    },
+    "openclaw-session-viewer": {
+      "version": "1.0.0",
+      "installedAt": 1773636182213
+    },
+    "subagent-dashboard": {
+      "version": "1.0.0",
+      "installedAt": 1773636301517
+    },
+    "session-log": {
+      "version": "1.0.0",
+      "installedAt": 1773636483053
+    },
+    "subagent-tracker": {
+      "version": "1.2.0",
+      "installedAt": 1773636484009
+    }
+  }
+}

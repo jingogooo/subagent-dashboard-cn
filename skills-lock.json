@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "skills": {
+    "backtesting-trading-strategies": {
+      "source": "jeremylongshore/claude-code-plugins-plus-skills",
+      "sourceType": "github",
+      "computedHash": "dfa052eb770da7da56d06b0879c5007ed7b45ad4e4444b6041c3e16b8f0e0432"
+    },
+    "china-stock-analysis": {
+      "source": "sugarforever/01coder-agent-skills",
+      "sourceType": "github",
+      "computedHash": "a7de1ec48a7a46867eccaa927cb100c4e3c248c71f5266762d7fdecd65558cd9"
+    },
+    "stock-analysis": {
+      "source": "gracefullight/stock-checker",
+      "sourceType": "github",
+      "computedHash": "bcd3abe47bd81a2c39b77fd3f116f98ff1f30ffe2604fc4189fd5d717581ff00"
+    },
+    "technical-analysis": {
+      "source": "omer-metin/skills-for-antigravity",
+      "sourceType": "github",
+      "computedHash": "648e00fcf4b1da1689fa1df1bad5249c5f04625e6264475369d51a3a50a7eb0d"
+    },
+    "tushare-finance": {
+      "source": "stanleychanh/tushare-finance-skill-for-claude-code",
+      "sourceType": "github",
+      "computedHash": "1ce0f346e96b8615a5cbd8e3670ff0905e3e94b490106715685240a02f320fd6"
+    }
+  }
+}
