@@ -1,25 +1,27 @@
-# Subagent Dashboard
+# OpenClaw 智能体监控面板 (中文版)
 
-A real-time web dashboard for monitoring OpenClaw subagents. View active agents, their progress, transcripts, and manage stalled sessions.
+OpenClaw 子代理的实时监控 Web 面板。查看活跃智能体、进度、对话记录，并管理卡死的会话。
 
-## Features
+![Dashboard Screenshot](./screenshot.jpg)
 
-- **Real-time monitoring** - Auto-refreshes every 3 seconds
-- **Agent cards** - See model, age, tokens, and task progress
-- **Transcript viewing** - View recent activity for each agent
-- **Stall detection** - Highlights agents inactive for >30 minutes
-- **Refresh controls** - Manual refresh and restart options
+## 功能特性
 
-## Quick Start
+- **实时监控** - 每3秒自动刷新
+- **智能体卡片** - 查看模型、运行时间、Token 使用量和任务进度
+- **对话记录查看** - 查看每个智能体的最近活动
+- **卡死检测** - 高亮显示超过30分钟无活动的智能体
+- **刷新控制** - 手动刷新和重启选项
+
+## 快速开始
 
 ```bash
 cd workspace/skills/subagent-dashboard/scripts
 ./start_dashboard.sh
 ```
 
-Then open http://localhost:8080 in your browser.
+然后在浏览器中打开 http://localhost:8080
 
-## Manual Start
+## 手动启动
 
 ```bash
 cd workspace/skills/subagent-dashboard/scripts
@@ -29,52 +31,77 @@ pip install -r ../requirements.txt
 python3 dashboard.py
 ```
 
-## Usage
+## 使用方法
 
-The dashboard automatically shows all active subagents (active within the last 60 minutes). Each card displays:
+面板会自动显示过去60分钟内活跃的所有子代理。每张卡片显示：
 
-- **Agent number** and model
-- **Age** - How long the agent has been running
-- **Token usage** - Input and output tokens
-- **Task progress** - If available (Task X/Y)
-- **Task description** - What the agent is working on
+- **智能体编号** 和模型
+- **运行时间** - 智能体已运行多长时间
+- **Token 使用量** - 输入和输出 Token
+- **任务进度** - 如果可用 (任务 X/Y)
+- **任务描述** - 智能体正在处理的内容
 
-### Actions
+### 操作按钮
 
-- **📋 Transcript** - View recent activity/events for the agent
-- **🔄 Refresh** - Refresh agent status
-- **⚡ Restart** - Restart stalled agents (requires gateway access)
+- **📋 对话记录** - 查看智能体的最近活动/事件
+- **🔄 刷新** - 刷新智能体状态
+- **⚡ 重启** - 重启卡死的智能体 (需要网关访问)
+- **▶️ 恢复** - 恢复卡死的任务
+- **⛔ 取消任务** - 取消正在运行的任务
 
-### Auto-refresh
+### 自动刷新
 
-The dashboard auto-refreshes every 3 seconds. Click "Pause" to stop auto-refresh, or "Resume" to restart it.
+面板每3秒自动刷新。点击"暂停"停止自动刷新，或点击"继续"重新开始。
 
-## API Endpoints
+### 自动重排
 
-- `GET /api/subagents` - List all active subagents
-- `GET /api/subagent/<session_id>/status` - Get detailed status
-- `GET /api/subagent/<session_id>/transcript?lines=N` - Get transcript (default 50 lines)
-- `POST /api/subagent/<session_id>/refresh` - Request refresh/restart
-- `GET /api/stalled` - Get list of stalled agents
+启用后，面板会自动尝试恢复卡死的智能体。
 
-## Requirements
+## API 端点
+
+- `GET /api/subagents` - 列出所有活跃子代理
+- `GET /api/subagent/<session_id>/status` - 获取详细状态
+- `GET /api/subagent/<session_id>/transcript?lines=N` - 获取对话记录 (默认50行)
+- `POST /api/subagent/<session_id>/refresh` - 请求刷新/重启
+- `GET /api/stalled` - 获取卡死代理列表
+- `GET /api/project` - 获取当前项目信息
+
+## 系统要求
 
 - Python 3.7+
-- Flask and flask-cors (installed via requirements.txt)
-- Access to OpenClaw session files (`~/.openclaw/agents/main/sessions/`)
-- Subagent-tracker skill installed
+- Flask 和 flask-cors (通过 requirements.txt 安装)
+- 访问 OpenClaw 会话文件 (`~/.openclaw/agents/main/sessions/`)
+- 已安装 subagent-tracker skill
 
-## Subagents not showing?
+## 智能体未显示？
 
-The dashboard reads from `OPENCLAW_HOME/agents/main/sessions/sessions.json` (default `~/.openclaw`). If you don't see spawned subagents:
+面板从 `OPENCLAW_HOME/agents/main/sessions/sessions.json` (默认 `~/.openclaw`) 读取。如果您看不到生成的子代理：
 
-1. **Same OpenClaw home** – Start the dashboard with the same `OPENCLAW_HOME` your TUI/gateway use. Example: `OPENCLAW_HOME=/path/to/.openclaw ./scripts/start_dashboard.sh`
-2. **Gateway writes sessions** – Subagents appear only after the gateway has registered them in `sessions.json`. If the TUI runs elsewhere (e.g. different machine or sandbox), that gateway may write to a different path; point `OPENCLAW_HOME` at that path when starting the dashboard.
+1. **相同的 OpenClaw 主目录** – 使用与您的 TUI/网关相同的 `OPENCLAW_HOME` 启动面板。示例：`OPENCLAW_HOME=/path/to/.openclaw ./scripts/start_dashboard.sh`
+2. **网关写入会话** – 只有在网关在 `sessions.json` 中注册后，子代理才会出现。如果 TUI 在其他地方运行（例如不同的机器或沙箱），该网关可能会写入不同的路径；启动面板时将 `OPENCLAW_HOME` 指向该路径。
 
-## Port
+## 端口
 
-Default port is 8080 (to avoid macOS AirPlay Receiver conflict on 5000). Set `PORT` environment variable to change:
+默认端口为 8080 (避免与 macOS AirPlay 接收器在 5000 端口冲突)。设置 `PORT` 环境变量以更改：
 
 ```bash
 PORT=5000 python3 dashboard.py
 ```
+
+## 中文翻译说明
+
+本项目已完全中文化，包括：
+- 界面标签和按钮
+- 状态提示和错误消息
+- 代码注释和文档字符串
+- API 响应消息
+
+## 截图预览
+
+![面板界面](./screenshot.jpg)
+
+*看板视图显示智能体的不同状态：进行中、队列、阻塞、已完成、已取消*
+
+## 许可证
+
+MIT License - 与 OpenClaw 项目兼容
