@@ -3192,4 +3192,4 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))  # Default to 8080 to avoid macOS AirPlay conflict
     print(f"正在启动智能体监控面板于 http://localhost:{port}")
     print(f"OpenClaw 主目录: {OPENCLAW_HOME}")
-    app.run(host='0.0.0.0', port=port, debug=True)ue))e))g=True)ue))e))))))g=True)ue))e))))))))))e)))))))))
+    app.run(host='0.0.0.0', port=port, debug=True)
